@@ -1,0 +1,46 @@
+version: '3'
+services:
+  apache:
+    image: httpd:latest
+    container_name: apache
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./html:/usr/local/apache2/htdocs
+      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf
+    restart: unless-stopped
+
+  webmin:
+    container_name: webmin
+    image: slab42/bind9.18
+    restart: unless-stopped
+    ports:
+        - "53:53/udp"
+        - "10000:10000/tcp"
+    volumes:
+        - ./webmin_data:/data
+    environment:
+        - WEBMIN_ENABLED=true
+        - WEBMIN_INIT_SSL_ENABLED=false
+        - TZ=Europe/Zurich
+
+# --- Optionnel ---
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    ports:
+      - "8000:8000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer_data:/data
+    restart: unless-stopped
