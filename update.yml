@@ -1,0 +1,17 @@
+---
+- name: Playbook - Mise à jour des Raspberry Pi
+  hosts: raspberries
+  become: yes
+  tasks:
+    - name: Mise à jour des paquets
+      apt:
+        update_cache: yes
+
+    - name: Mise à niveau du système
+      apt:
+        upgrade: full
+        force_apt_get: yes
+        autoremove: yes
+
+    - name: Mise à jour du firmware
+      command: rpi-update
