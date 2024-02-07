@@ -1,7 +1,0 @@
-# inventory.yml
-
-raspberries:
-  hosts:
-    pi1.local:
-    pi2.local:
-    pi3.local:
