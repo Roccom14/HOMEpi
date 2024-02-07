@@ -15,7 +15,7 @@ sudo apt -y update && sudo apt -y full-upgrade
 sudo rpi-update -y
 
 # Installation des programmes spécifiques au pi1
-sudo apt -y install cups samba samba-common-bin
+sudo apt -y install cups samba samba-common-bin ansible
 
 # Configuration de base
 sudo usermod -aG lpadmin whoami

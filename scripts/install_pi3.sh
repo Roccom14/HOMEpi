@@ -15,7 +15,7 @@ sudo apt -y update && sudo apt -y full-upgrade
 sudo rpi-update -y
 
 # Installation des programmes spécifiques au pi3
-sudo apt -y install certbot ca-certificates curl
+sudo apt -y install certbot ca-certificates curl ansible
 
 ## Installation de Docker
 # Ajout de la clé GPG officielle de Docker

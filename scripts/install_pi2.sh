@@ -15,7 +15,7 @@ sudo apt -y update && sudo apt -y full-upgrade
 sudo rpi-update -y
 
 # Installation des programmes spécifiques au pi2
-sudo apt -y install rsync
+sudo apt -y install rsync ansible
 
 # Redémarrage du système pour appliquer les paramètres
 sudo reboot now
