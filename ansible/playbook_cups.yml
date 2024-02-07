@@ -1,0 +1,33 @@
+---
+- name: Playbook - Mise en place de CUPS
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Mise à jour du système
+      include_playbook: playbook_update.yml
+
+    - name: Installation de CUPS
+      apt:
+        name: cups
+        state: present
+
+    - name: Ajout de l'utilisateur actuel au groupe lpadmin
+      user:
+        name: "{{ ansible_user }}"
+        groups: lpadmin
+        append: yes
+
+    - name: Importaton du fichier cupsd.conf
+      copy:
+        src: ../conf/cupsd.conf
+        dest: /etc/cups/cupsd.conf
+        owner: root
+        group: lp
+        mode: '0644'
+      notify: Redémarrage du service CUPS
+
+  handlers:
+    - name: Redémarrage du service CUPS
+      service:
+        name: cups
+        state: restarted

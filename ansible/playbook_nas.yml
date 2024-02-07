@@ -1,0 +1,83 @@
+---
+- name: Playbook - Mise en place du NAS
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Mise à jour du système
+      include_playbook: playbook_update.yml
+
+    - name: Installation des programmes spécifiques au NAS
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - samba
+        - samba-common-bin
+
+    - name: Montage du disque
+      mount:
+        src: /dev/sda1
+        path: /mnt/sda1
+        state: mounted
+
+    - name: Montage automatique du disque au démarrage
+      lineinfile:
+        dest: /etc/fstab
+        line: "/dev/sda1 /mnt/sda1/ ext4 defaults,noatime 0 1"
+        insertafter: EOF
+        state: present
+
+    - name: Création des dossiers
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - /mnt/sda1/backups
+        - /mnt/sda1/shared
+        - /mnt/sda1/shared/nas1-tpi
+        - /mnt/sda1/shared/nas2-tpi
+        - /mnt/sda1/TimeMachine
+
+    - name: Ajouter des partages Samba au fichier smb.conf
+      blockinfile:
+        path: /etc/samba/smb.conf
+        block: |
+          [shared]
+          path = /mnt/sda1/shared
+          writeable = yes
+          create mask = 0770
+          directory mask = 0770
+          public = no
+
+          [backups]
+          path = /mnt/sda1/backups
+          writeable = yes
+          create mask = 0770
+          directory mask = 0770
+          public = no
+
+          [TimeMachine]
+          comment = Time Machine
+          path = /mnt/sda1/TimeMachine
+          browseable = yes
+          writeable = yes
+          guest ok = no
+          create mask = 0770
+          directory mask = 0770
+          vfs objects = catia fruit streams_xattr
+          fruit:aapl = yes
+          fruit:time machine = yes
+        state: present
+
+    - name: Réglage des permissions sur le disque
+      file:
+        path: /mnt/sda1
+        mode: "0770"
+        state: directory
+      recursive: yes
+
+  handlers:
+    - name: Redémarrage du service Samba
+      service:
+        name: smbd
+        state: restarted

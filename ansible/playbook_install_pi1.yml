@@ -1,0 +1,128 @@
+---
+- name: Playbook - Installation et configuration Raspberry Pi1
+  hosts: pi1
+  become: yes
+  tasks:
+    - name: Générer les locales en français suisse
+      command: locale-gen fr_CH.UTF-8
+
+    - name: Définition des paramètres régionaux
+      command: localectl set-locale LANG=fr_CH.UTF-8
+
+    - name: Définition des variables d'environnement
+      lineinfile:
+        dest: /etc/environment
+        line: "{{ item }}"
+      with_items:
+        - "LANGUAGE=fr_CH.UTF-8"
+        - "LC_ALL=fr_CH.UTF-8"
+        - "LANG=fr_CH.UTF-8"
+        - "LC_CTYPE=fr_CH.UTF-8"
+
+    - name: Mise à jour du Raspberry Pi1
+      include_playbook: playbook_update.yml
+
+    - name: Installation des programmes spécifiques au Pi1
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - cups
+        - samba
+        - samba-common-bin
+        - ansible
+
+    - name: Ajout de l'utilisateur actuel au groupe lpadmin
+      user:
+        name: "{{ ansible_user }}"
+        groups: lpadmin
+        append: yes
+
+    - name: Importaton du fichier cupsd.conf
+      copy:
+        src: ../conf/cupsd.conf
+        dest: /etc/cups/cupsd.conf
+        owner: root
+        group: lp
+        mode: '0644'
+      notify: Redémarrage du service CUPS
+
+  handlers:
+    - name: Redémarrage du service CUPS
+      service:
+        name: cups
+        state: restarted
+
+    - name: Montage du disque
+      mount:
+        src: /dev/sda1
+        path: /mnt/sda1
+        state: mounted
+
+    - name: Montage automatique du disque au démarrage
+      lineinfile:
+        dest: /etc/fstab
+        line: "/dev/sda1 /mnt/sda1/ ext4 defaults,noatime 0 1"
+        insertafter: EOF
+        state: present
+
+    - name: Création des dossiers
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - /mnt/sda1/backups
+        - /mnt/sda1/shared
+        - /mnt/sda1/shared/nas1-tpi
+        - /mnt/sda1/shared/nas2-tpi
+        - /mnt/sda1/TimeMachine
+
+    - name: Ajouter des partages Samba au fichier smb.conf
+      blockinfile:
+        path: /etc/samba/smb.conf
+        block: |
+          [shared]
+          path = /mnt/sda1/shared
+          writeable = yes
+          create mask = 0770
+          directory mask = 0770
+          public = no
+
+          [backups]
+          path = /mnt/sda1/backups
+          writeable = yes
+          create mask = 0770
+          directory mask = 0770
+          public = no
+
+          [TimeMachine]
+          comment = Time Machine
+          path = /mnt/sda1/TimeMachine
+          browseable = yes
+          writeable = yes
+          guest ok = no
+          create mask = 0770
+          directory mask = 0770
+          vfs objects = catia fruit streams_xattr
+          fruit:aapl = yes
+          fruit:time machine = yes
+        state: present
+
+    - name: Réglage des permissions sur le disque
+      file:
+        path: /mnt/sda1
+        mode: "0770"
+        state: directory
+      recursive: yes
+
+    - name: Ajout d'une tâche cron pour la mise à jour automatique du système
+      cron:
+        minute: "30"
+        hour: "3"
+        job: "ansible-playbook -i inventory.yml playbook_update.yml"
+        user: "root"
+        state: present
+      when: inventory_hostname == ansible_hostname
+
+    - name: Redémarrage du système pour appliquer les paramètres
+      command: reboot now

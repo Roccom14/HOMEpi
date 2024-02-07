@@ -1,0 +1,57 @@
+---
+- name: Playbook - Installation et configuration Raspberry Pi2
+  hosts: pi2
+  become: yes
+  tasks:
+    - name: Générer les locales en français suisse
+      command: locale-gen fr_CH.UTF-8
+
+    - name: Définition des paramètres régionaux
+      command: localectl set-locale LANG=fr_CH.UTF-8
+
+    - name: Définition des variables d'environnement
+      lineinfile:
+        dest: /etc/environment
+        line: "{{ item }}"
+      with_items:
+        - "LANGUAGE=fr_CH.UTF-8"
+        - "LC_ALL=fr_CH.UTF-8"
+        - "LANG=fr_CH.UTF-8"
+        - "LC_CTYPE=fr_CH.UTF-8"
+
+    - name: Mise à jour du Raspberry Pi2
+      include_playbook: playbook_update.yml
+
+    - name: Installation des programmes spécifiques au Pi2
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - rsync
+        - ansible
+
+    - name: Montage automatique du disque au démarrage
+      lineinfile:
+        dest: /etc/fstab
+        line: "/dev/sda1 /mnt/sda1/ exfat defaults,noatime 0 1"
+        insertafter: EOF
+        state: present
+
+    - name: Ajout d'une tâche cron rsync
+      cron:
+        minute: "0"
+        hour: "*"
+        user: "root"
+        job: "sudo rsync -rvzu homepi@pi1.local:/mnt/sda1/ /mnt/sda1/"
+
+    - name: Ajout d'une tâche cron pour la mise à jour automatique du système
+      cron:
+        minute: "30"
+        hour: "3"
+        job: "ansible-playbook -i inventory.yml playbook_update.yml"
+        user: "root"
+        state: present
+      when: inventory_hostname == ansible_hostname
+
+    - name: Redémarrage du système pour appliquer les paramètres
+      command: reboot now

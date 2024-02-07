@@ -12,6 +12,3 @@
         upgrade: full
         force_apt_get: yes
         autoremove: yes
-
-    - name: Mise à jour du firmware
-      command: rpi-update

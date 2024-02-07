@@ -1,0 +1,86 @@
+---
+- name: Playbook - Installation et configuration Raspberry Pi3
+  hosts: pi3
+  become: yes
+  tasks:
+    - name: Générer les locales en français suisse
+      command: locale-gen fr_CH.UTF-8
+
+    - name: Définition des paramètres régionaux
+      command: localectl set-locale LANG=fr_CH.UTF-8
+
+    - name: Définition des variables d'environnement
+      lineinfile:
+        dest: /etc/environment
+        line: "{{ item }}"
+      with_items:
+        - "LANGUAGE=fr_CH.UTF-8"
+        - "LC_ALL=fr_CH.UTF-8"
+        - "LANG=fr_CH.UTF-8"
+        - "LC_CTYPE=fr_CH.UTF-8"
+
+    - name: Mise à jour du Raspberry Pi3
+      include_playbook: playbook_update.yml
+
+    - name: Ajout de la clé GPG officielle de Docker
+      shell: "sudo install -m 0755 -d /etc/apt/keyrings && sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc && sudo chmod a+r /etc/apt/keyrings/docker.asc"
+
+    - name: Configuration du repository de Docker
+      lineinfile:
+        path: "/etc/apt/sources.list.d/docker.list"
+        line: "deb [arch={{ dpkg_architecture }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable"
+        state: present
+      vars:
+        dpkg_architecture: "{{ dpkg_architecture.stdout }}"
+      register: lsb_release
+
+    - name: Installation des programmes spécifiques au Pi3
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - certbot
+        - ca-certificates
+        - curl
+        - ansible
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-buildx-plugin
+        - docker-compose-plugin
+
+    - name: Création des clés SSL auto-signées
+      openssl_certificate:
+        path: ../docker/apache/
+        name: server
+        privatekey_path: ../docker/apache/server.key
+        csr_path: ../docker/apache/server.csr
+        publickey_path: ../docker/apache/server.crt
+        owner: pi3
+        group: pi3
+        mode: '0644'
+        common_name: pi3.local
+        country: CH
+        state: Vaud
+        locality: Lausanne
+        organization: EPFL
+        organizational_unit: ENAC-IT
+        email: rocco.ronzano@epfl.ch
+        bits: 4096
+        days: 365
+        force: yes
+
+    - name: Lancement du docker compose
+      command: docker compose ../docker/docker-compose.yml up
+
+    - name: Ajout d'une tâche cron pour la mise à jour automatique du système
+      cron:
+        minute: "30"
+        hour: "3"
+        job: "ansible-playbook -i inventory.yml playbook_update.yml"
+        user: "root"
+        state: present
+      when: inventory_hostname == ansible_hostname
+
+    - name: Redémarrage du système pour appliquer les paramètres
+      command: reboot now

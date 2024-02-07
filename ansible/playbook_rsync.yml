@@ -1,0 +1,26 @@
+---
+- name: Playbook - Mise en place de Rsync
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Mise à jour du système
+      include_playbook: playbook_update.yml
+
+    - name: Installation de Rsync
+      apt:
+        name: rsync
+        state: present
+
+    - name: Montage automatique du disque au démarrage
+      lineinfile:
+        dest: /etc/fstab
+        line: "/dev/sda1 /mnt/sda1/ exfat defaults,noatime 0 1"
+        insertafter: EOF
+        state: present
+
+    - name: Ajout d'une tâche cron Rsync
+      cron:
+        minute: "0"
+        hour: "*"
+        user: "root"
+        job: "sudo rsync -rvzu homepi@pi1.local:/mnt/sda1/ /mnt/sda1/"
