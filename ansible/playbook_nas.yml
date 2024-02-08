@@ -1,10 +1,17 @@
 ---
 - name: Playbook - Mise en place du NAS
-  hosts: localhost
+  hosts: all
   become: yes
   tasks:
-    - name: Mise à jour du système
-      include_playbook: playbook_update.yml
+    - name: Mise à jour des paquets
+      apt:
+        update_cache: yes
+
+    - name: Mise à niveau du système
+      apt:
+        upgrade: full
+        force_apt_get: yes
+        autoremove: yes
 
     - name: Installation des programmes spécifiques au NAS
       apt:

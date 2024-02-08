@@ -1,0 +1,13 @@
+---
+- name: Master Playbook - Installation des Raspberry Pi
+  hosts: raspberries
+  become: yes
+  tasks:
+    - name: Installation Pi1
+      include_playbook: playbook_install_pi1.yml
+
+    - name: Installation Pi2
+      include_playbook: playbook_install_pi2.yml
+
+    - name: Installation Pi3
+      include_playbook: playbook_install_pi3.yml

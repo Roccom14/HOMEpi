@@ -18,66 +18,100 @@
         - "LC_ALL=fr_CH.UTF-8"
         - "LANG=fr_CH.UTF-8"
         - "LC_CTYPE=fr_CH.UTF-8"
+    
+    - name: Mise à jour des paquets
+      apt:
+        update_cache: yes
 
-    - name: Mise à jour du Raspberry Pi3
-      include_playbook: playbook_update.yml
+    - name: Mise à niveau du système
+      apt:
+        upgrade: full
+        force_apt_get: yes
+        autoremove: yes
 
     - name: Ajout de la clé GPG officielle de Docker
-      shell: "sudo install -m 0755 -d /etc/apt/keyrings && sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc && sudo chmod a+r /etc/apt/keyrings/docker.asc"
-
-    - name: Configuration du repository de Docker
-      lineinfile:
-        path: "/etc/apt/sources.list.d/docker.list"
-        line: "deb [arch={{ dpkg_architecture }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable"
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
         state: present
-      vars:
-        dpkg_architecture: "{{ dpkg_architecture.stdout }}"
-      register: lsb_release
 
-    - name: Installation des programmes spécifiques au Pi3
+    - name: Installation des paquets requis
       apt:
         name: "{{ item }}"
         state: present
       loop:
-        - certbot
-        - ca-certificates
-        - curl
-        - ansible
-        - docker-ce
-        - docker-ce-cli
-        - containerd.io
-        - docker-buildx-plugin
-        - docker-compose-plugin
+          - ca-certificates
+          - curl
 
-    - name: Création des clés SSL auto-signées
-      openssl_certificate:
-        path: ../docker/apache/
-        name: server
-        privatekey_path: ../docker/apache/server.key
-        csr_path: ../docker/apache/server.csr
-        publickey_path: ../docker/apache/server.crt
-        owner: pi3
-        group: pi3
-        mode: '0644'
-        common_name: pi3.local
-        country: CH
-        state: Vaud
-        locality: Lausanne
-        organization: EPFL
-        organizational_unit: ENAC-IT
-        email: rocco.ronzano@epfl.ch
-        bits: 4096
-        days: 365
+    - name: Création du répertoire /etc/apt/keyrings
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Téléchargement de la clé GPG de Docker
+      get_url:
+        url: https://download.docker.com/linux/debian/gpg
+        dest: /etc/apt/keyrings/docker.asc
+
+    - name: Définition du repository de Docker
+      blockinfile:
+        path: /etc/apt/sources.list.d/docker.list
+        block: |
+          deb [arch={{ ansible_architecture }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: Mise à jour du cache Apt
+      apt:
+        update_cache: yes
+
+    - name: Installation de Docker et des composants associés
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+
+    - name: Vérification de l'installation de Docker
+      command: docker run hello-world
+      register: docker_hello
+      ignore_errors: yes
+
+    - name: Affichage du résultat de la vérification
+      debug:
+        msg: "Docker est correctement installé et fonctionnel."
+      when: docker_hello is success
+
+    - name: Cloner le dépôt Git
+      git:
+        repo: https://github.com/roccom14/HOMEpi
+        dest: "/home/{{ ansible_user }}/HOMEpi"
+        version: main
         force: yes
+    
+    - name: Création des clés SSL auto-signées
+      shell: |
+        COUNTRY="CH"
+        STATE="Vaud"
+        CITY="Lausanne"
+        ORGANIZATION="EPFL"
+        ORG_UNIT="ENAC-IT"
+        COMMON_NAME="{{ ansible_user }}.local"
+        EMAIL="rocco.ronzano@epfl.ch"
+
+        sudo openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout /home/{{ ansible_user }}/HOMEpi/docker/apache/server.key -out /home/{{ ansible_user }}/HOMEpi/docker/apache/server.crt -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=$ORGANIZATION/OU=$ORG_UNIT/CN=$COMMON_NAME/emailAddress=$EMAIL"
 
     - name: Lancement du docker compose
-      command: docker compose ../docker/docker-compose.yml up
+      command: "docker compose -f /home/{{ ansible_user }}/HOMEpi/docker/docker-compose.yml up -d"
 
     - name: Ajout d'une tâche cron pour la mise à jour automatique du système
       cron:
         minute: "30"
         hour: "3"
-        job: "ansible-playbook -i inventory.yml playbook_update.yml"
+        job: "ansible-playbook -i /home/{{ ansible_user }}/HOMEpi/ansible/inventory.yml /home/{{ ansible_user }}/HOMEpi/playbook_update.yml -l {{ ansible_user }}"
         user: "root"
         state: present
       when: inventory_hostname == ansible_hostname
