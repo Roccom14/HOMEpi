@@ -7,7 +7,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./apche/index.html:/usr/local/apache2/htdocs
+      - ./apache:/usr/local/apache2/htdocs
       - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
       - ./apache/httpd-ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf
       - ./apache/server.crt:/usr/local/apache2/conf/server.crt
@@ -16,20 +16,13 @@ services:
 
   webmin:
     container_name: webmin
-    image: slab42/bind9.18
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: unless-stopped
     ports:
         - "10000:10000"
         - "9631:631"
-    volumes:
-        - ./webmin_data:/data
-    environment:
-        - WEBMIN_ENABLED=true
-        - WEBMIN_INIT_SSL_ENABLED=false
-        - TZ=Europe/Zurich
-    build:
-      context: .
-      dockerfile: Dockerfile
 
 # --- Optionnel ---
 

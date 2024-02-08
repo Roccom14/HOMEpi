@@ -1,11 +1,17 @@
-# Utiliser l'image slab42/bind9.18 comme base
-FROM slab42/bind9.18
+FROM debian:stable-slim
 
-# Installer les dépendances nécessaires pour CUPS (Common UNIX Printing System), Webmin, Avahi et>
-RUN apt-get update && \
-    apt-get install -y cups webmin avahi-daemon cups-daemon && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Installation des mises à jour, des dépendances de Webmin, des outils réseau et de CUPS
+RUN apt -y update && apt -y full-upgrade
+RUN apt -y install perl libnet-ssleay-perl openssl libauthen-pam-perl libpam-runtime libio-pty-perl apt-show-versions python-is-python3 wget unzip shared-mime-info net-tools cups apache2-utils curl
+
+# Suppression des listes de paquets
+RUN rm -rf /var/lib/apt/lists/*
+
+# Installation du module Perl DateTime
+RUN cpan DateTime
+
+# Téléchargement et installation de Webmin
+RUN curl -o setup-repos.sh https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh && yes | sh setup-repos.sh && apy -y update && apt -y install webmin --install-recommends
 
 # Exposer les ports nécessaires
 EXPOSE 631 10000
@@ -20,4 +26,4 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Lancer les services lors du démarrage du conteneur
-CMD ["/entrypoint.sh"]
+CMD ["/bin/bash", "-c", "/entrypoint.sh && tail -f /dev/null"]
