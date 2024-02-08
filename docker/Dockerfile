@@ -17,7 +17,7 @@ RUN curl -o setup-repos.sh https://raw.githubusercontent.com/webmin/webmin/maste
 EXPOSE 631 10000
 
 # Copier le fichier cupsd.conf personnalisé dans le conteneur
-COPY cupsd.conf /etc/cups/cupsd.conf
+COPY ../conf/cupsd.conf /etc/cups/cupsd.conf
 
 # Copier le fichier d'entrée personnalisé dans le conteneur
 COPY entrypoint.sh /entrypoint.sh
