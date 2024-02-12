@@ -46,6 +46,7 @@
 
     - name: Ajout d'une tâche cron rsync
       cron:
+        name: Réplication données Rsync
         minute: "0"
         hour: "*"
         user: "root"
