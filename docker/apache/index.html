@@ -25,21 +25,29 @@
         nav {
             background-color: #444;
             color: #fff;
-            padding: 10px 0;
-            text-align: center;
+            padding: 20px;
+            text-align: left;
+            height: 100%;
+            position: fixed;
+            left: 0;
+            top: 0;
         }
         nav ul {
             list-style-type: none;
             margin: 0;
             padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         nav ul li {
             display: inline;
-            margin: 0 10px;
+            margin: 10px 0;
         }
         nav ul li a {
             color: #fff;
             text-decoration: none;
+            display: block;
         }
         section {
             padding: 20px 0;
@@ -65,39 +73,193 @@
     <nav>
         <ul>
             <li><a href="#Prérequis">Prérequis</a></li>
-            <li><a href="#Installation">Installation</a></li>
-            <li><a href="#Configuration">Configuration</a></li>
-            <li><a href="#Utilisation">Utilisation</a></li>
+            <li><a href="#Installation de Raspberry Pi OS">Installation de Raspberry Pi OS</a></li>
+            <li><a href="#Configuration de base du Raspberry Pi">Configuration de base du Raspberry Pi</a></li>
+            <li><a href="#Configuration du service d'impression (CUPS)">Configuration du service d'impression (CUPS)</a></li>
+            <li><a href="#Configuration du NAS et de la sauvegarde">Configuration du NAS et de la sauvegarde</a></li>
+            <li><a href="#Mise en place de l'impression sur macOS">Mise en place de l'impression sur macOS</a></li>
+            <li><a href="#Mise en place de l'impression sur Windows">Mise en place de l'impression sur Windows</a></li>
+            <li><a href="#Mise en place de la sauvegarde sur macOS">Mise en place de la sauvegarde sur macOS</a></li>
+            <li><a href="#Mise en place de la sauvegarde sur Windows">Mise en place de la sauvegarde sur Windows</a></li>
+            <li><a href="#Mise en place du NAS sur macOS">Mise en place du NAS sur macOS</a></li>
+            <li><a href="#Mise en place du NAS sur Windows">Mise en place du NAS sur Windows</a></li>
         </ul>
     </nav>
     <div class="container">
         <section id="Prérequis">
             <h2>Prérequis</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat eleifend lorem, eu suscipit arcu bibendum et. Nullam sit amet hendrerit leo. Proin condimentum ipsum a sapien volutpat, sed facilisis quam finibus. Donec euismod tortor vitae augue suscipit, quis facilisis dui vestibulum. Vivamus congue mauris a purus mattis, eu fringilla mi blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Curabitur sit amet leo euismod, gravida sapien ac, suscipit tortor. Donec tristique turpis nisl, ac fermentum nunc vehicula in. Duis id elit vitae velit lacinia ullamcorper. Aenean non tellus dapibus, efficitur velit sit amet, luctus eros.</p>
-            <p>Praesent dapibus lobortis massa, in efficitur ex vulputate et. Nulla vel convallis justo. Fusce nec ante ut ipsum facilisis aliquam sit amet vitae purus. Nam lacinia fringilla felis, eu mollis purus accumsan vel. Suspendisse potenti. Ut efficitur magna sit amet turpis gravida sollicitudin. Quisque posuere, quam at malesuada malesuada, urna felis placerat nisi, vitae condimentum justo dui sed elit. Morbi dignissim commodo ligula, nec pharetra nulla pharetra ut. Proin vulputate condimentum velit, eget vestibulum turpis ultricies sed. Sed eget consectetur mauris. Duis pulvinar lorem a mi varius, vel consequat nunc lacinia.</p>
-            <p>In nec justo at turpis convallis vehicula. Sed gravida nec lacus ac rhoncus. Ut sed elit ultricies, fermentum odio vel, tincidunt velit. Aenean non neque consectetur, blandit ex nec, viverra justo. Ut dapibus eros eget ligula eleifend hendrerit. Duis condimentum pharetra enim eget fermentum. Integer id turpis vel sapien convallis euismod. Cras non rhoncus velit, a interdum ex. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed luctus, odio eu efficitur auctor, purus dolor rutrum odio, in fermentum nisi ligula eu ipsum. Curabitur pharetra nunc eget mauris iaculis varius. Donec gravida vel velit ac scelerisque. Duis sodales libero eu justo laoreet volutpat. In hac habitasse platea dictumst. Quisque dictum purus ut sapien luctus, non ultrices ligula laoreet.</p>
+            <ul>
+                <li>Connexion internet</li>
+                <li>Connaissances minimales en informatique</li>
+                <li>Un ordinateur</li>
+                <li>Un Raspberry Pi</li>
+                <li>Une carte micro SD</li>
+                <li>Une imprimante</li>
+                <li>Un stockage externe USB</li>
+            </ul>
         </section>
-        <section id="Installation">
-            <h2>Installation</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat eleifend lorem, eu suscipit arcu bibendum et. Nullam sit amet hendrerit leo. Proin condimentum ipsum a sapien volutpat, sed facilisis quam finibus. Donec euismod tortor vitae augue suscipit, quis facilisis dui vestibulum. Vivamus congue mauris a purus mattis, eu fringilla mi blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Curabitur sit amet leo euismod, gravida sapien ac, suscipit tortor. Donec tristique turpis nisl, ac fermentum nunc vehicula in. Duis id elit vitae velit lacinia ullamcorper. Aenean non tellus dapibus, efficitur velit sit amet, luctus eros.</p>
-            <p>Praesent dapibus lobortis massa, in efficitur ex vulputate et. Nulla vel convallis justo. Fusce nec ante ut ipsum facilisis aliquam sit amet vitae purus. Nam lacinia fringilla felis, eu mollis purus accumsan vel. Suspendisse potenti. Ut efficitur magna sit amet turpis gravida sollicitudin. Quisque posuere, quam at malesuada malesuada, urna felis placerat nisi, vitae condimentum justo dui sed elit. Morbi dignissim commodo ligula, nec pharetra nulla pharetra ut. Proin vulputate condimentum velit, eget vestibulum turpis ultricies sed. Sed eget consectetur mauris. Duis pulvinar lorem a mi varius, vel consequat nunc lacinia.</p>
-            <p>In nec justo at turpis convallis vehicula. Sed gravida nec lacus ac rhoncus. Ut sed elit ultricies, fermentum odio vel, tincidunt velit. Aenean non neque consectetur, blandit ex nec, viverra justo. Ut dapibus eros eget ligula eleifend hendrerit. Duis condimentum pharetra enim eget fermentum. Integer id turpis vel sapien convallis euismod. Cras non rhoncus velit, a interdum ex. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed luctus, odio eu efficitur auctor, purus dolor rutrum odio, in fermentum nisi ligula eu ipsum. Curabitur pharetra nunc eget mauris iaculis varius. Donec gravida vel velit ac scelerisque. Duis sodales libero eu justo laoreet volutpat. In hac habitasse platea dictumst. Quisque dictum purus ut sapien luctus, non ultrices ligula laoreet.</p>
+        <section id="Installation de Raspberry Pi OS">
+            <h2>Installation de Raspberry Pi OS</h2>
+            <ol>
+                <li>Pour commencer, télécharger l'outil de création d’image officielle de Raspberry PI depuis le site web de Raspberry.</li>
+                <li>Dans la première colonne, choisir « aucun filtre » pour afficher toutes les images disponibles.</li>
+                <li>Dans la seconde colonne, choisir « Raspberry PI OS (64-bit) ».</li>
+                <li>Dans troisième colonne, choisir la carte SD sur laquelle l'image sera installée.</li>
+                <li>Cliquer sur « suivant », un pop-up apparait, cliquer sur « modifier réglages »</li>
+                <li>Dans le panneau général, définir le nom d’hôte, par exemple « pi1 », définir le nom d’utilisateur, par exemple « pi1 » et un mot de passe, définir le fuseau horaire sur « Europe/Zurich » et définir le clavier sur « ch ». Dans le panneau services, cocher « Activer SSH ». Dans le panneau options, décocher « Activer la télémétrie ».</li>
+                <li>Cliquer sur « Enregistrer » et valider les paramètres en cliquant sur « Oui ». Valider le formatage de la carte SD en cliquant sur « Oui » et valider toutes les demandes du système.</li>
+                <li>Attendre la création de la carte SD lorsque la carte est prête un pop-up apparaît pour indiquer s’il a réussi la création de la carte SD.</li>
+            </ol>
         </section>
-        <section id="Configuration">
-            <h2>Configuration</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat eleifend lorem, eu suscipit arcu bibendum et. Nullam sit amet hendrerit leo. Proin condimentum ipsum a sapien volutpat, sed facilisis quam finibus. Donec euismod tortor vitae augue suscipit, quis facilisis dui vestibulum. Vivamus congue mauris a purus mattis, eu fringilla mi blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Curabitur sit amet leo euismod, gravida sapien ac, suscipit tortor. Donec tristique turpis nisl, ac fermentum nunc vehicula in. Duis id elit vitae velit lacinia ullamcorper. Aenean non tellus dapibus, efficitur velit sit amet, luctus eros.</p>
-            <p>Praesent dapibus lobortis massa, in efficitur ex vulputate et. Nulla vel convallis justo. Fusce nec ante ut ipsum facilisis aliquam sit amet vitae purus. Nam lacinia fringilla felis, eu mollis purus accumsan vel. Suspendisse potenti. Ut efficitur magna sit amet turpis gravida sollicitudin. Quisque posuere, quam at malesuada malesuada, urna felis placerat nisi, vitae condimentum justo dui sed elit. Morbi dignissim commodo ligula, nec pharetra nulla pharetra ut. Proin vulputate condimentum velit, eget vestibulum turpis ultricies sed. Sed eget consectetur mauris. Duis pulvinar lorem a mi varius, vel consequat nunc lacinia.</p>
-            <p>In nec justo at turpis convallis vehicula. Sed gravida nec lacus ac rhoncus. Ut sed elit ultricies, fermentum odio vel, tincidunt velit. Aenean non neque consectetur, blandit ex nec, viverra justo. Ut dapibus eros eget ligula eleifend hendrerit. Duis condimentum pharetra enim eget fermentum. Integer id turpis vel sapien convallis euismod. Cras non rhoncus velit, a interdum ex. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed luctus, odio eu efficitur auctor, purus dolor rutrum odio, in fermentum nisi ligula eu ipsum. Curabitur pharetra nunc eget mauris iaculis varius. Donec gravida vel velit ac scelerisque. Duis sodales libero eu justo laoreet volutpat. In hac habitasse platea dictumst. Quisque dictum purus ut sapien luctus, non ultrices ligula laoreet.</p>
+        <section id="Configuration de base du Raspberry Pi">
+            <h2>Configuration de base du Raspberry Pi</h2>
+            <ol>
+                <li>Insérer la carte SD préconfigurée dans le Pi et le brancher au courant ainsi que lui brancher un câble Ethernet.</li>
+                <li>Attendre que le Pi démarre et sur un ordinateur ouvrir un terminal et lancer cette commande (en remplaçant user par l’utilisateur et host par le nom d’hôte créé précédemment) :</li>
+                <p>ssh user@host.local</p>
+                <p>Valider avec « yes » et entrer le mot de passe de l’utilisateur préconfiguré et nous voilà dans le terminal du Pi.</p>
+                <li>Mettre à jour le Raspberry Pi avec cette commande :</li>
+                <p>sudo apt -y update && sudo apt -y full-upgrade</p>
+                <li>Installer les programmes nécessaires au bon fonctionnement du Raspberry Pi :</li>
+                <p>sudo apt -y install cups samba samba-common-bin</p>
+            </ol>
         </section>
-        <section id="Utilisation">
-            <h2>Utilisation</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat eleifend lorem, eu suscipit arcu bibendum et. Nullam sit amet hendrerit leo. Proin condimentum ipsum a sapien volutpat, sed facilisis quam finibus. Donec euismod tortor vitae augue suscipit, quis facilisis dui vestibulum. Vivamus congue mauris a purus mattis, eu fringilla mi blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Curabitur sit amet leo euismod, gravida sapien ac, suscipit tortor. Donec tristique turpis nisl, ac fermentum nunc vehicula in. Duis id elit vitae velit lacinia ullamcorper. Aenean non tellus dapibus, efficitur velit sit amet, luctus eros.</p>
-            <p>Praesent dapibus lobortis massa, in efficitur ex vulputate et. Nulla vel convallis justo. Fusce nec ante ut ipsum facilisis aliquam sit amet vitae purus. Nam lacinia fringilla felis, eu mollis purus accumsan vel. Suspendisse potenti. Ut efficitur magna sit amet turpis gravida sollicitudin. Quisque posuere, quam at malesuada malesuada, urna felis placerat nisi, vitae condimentum justo dui sed elit. Morbi dignissim commodo ligula, nec pharetra nulla pharetra ut. Proin vulputate condimentum velit, eget vestibulum turpis ultricies sed. Sed eget consectetur mauris. Duis pulvinar lorem a mi varius, vel consequat nunc lacinia.</p>
-            <p>In nec justo at turpis convallis vehicula. Sed gravida nec lacus ac rhoncus. Ut sed elit ultricies, fermentum odio vel, tincidunt velit. Aenean non neque consectetur, blandit ex nec, viverra justo. Ut dapibus eros eget ligula eleifend hendrerit. Duis condimentum pharetra enim eget fermentum. Integer id turpis vel sapien convallis euismod. Cras non rhoncus velit, a interdum ex. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed luctus, odio eu efficitur auctor, purus dolor rutrum odio, in fermentum nisi ligula eu ipsum. Curabitur pharetra nunc eget mauris iaculis varius. Donec gravida vel velit ac scelerisque. Duis sodales libero eu justo laoreet volutpat. In hac habitasse platea dictumst. Quisque dictum purus ut sapien luctus, non ultrices ligula laoreet.</p>
+        <section id="Configuration du service d'impression (CUPS)">
+            <h2>Configuration du service d'impression (CUPS)</h2>
+            <ol>
+                <li>Rajout de l’utilisateur actuel dans le groupe lpadmin</li>
+                <p>sudo usermod -aG lpadmin whoami</p>
+                <li>Éditer le fichier de configuration du serveur d’impression :</li>
+                <p>Sudo nano /etc/cups/cupsd.conf</p>
+                <p>Dans le fichier, rajouter les lignes manquantes :</p>
+                <p>
+                    Listen *:631
+                    <Location />
+                    Order allow,deny
+                    Allow all
+                    </Location>
+                    <Location /admin>
+                        Order allow,deny
+                        Allow all
+                    </Location>
+                </p>
+                <li>Après avoir édité le fichier de configuration du serveur d’impression, redémarrer le service pour appliquer les paramètres.</li>
+                <p>sudo service cups restart</p>
+                <li>Ouvrir un navigateur et entrer l’url « host.local:631 » pour accéder à la page d’administration de CUPS en rentrant les informations de connexion de l’utilisateur qui a été ajouté au groupe « lpadmin » précédemment et une fois connecté, aller sur « Ajouter une imprimante ».</li>
+                <li>Choisir l’imprimante dans la liste et cliquer sur « suivant ».</li>
+                <li>Définir le nom de l’imprimante pour y accéder en ligne, une description de l’imprimante et sa localisation, cliquer sur la case à cocher pour partager l’imprimante sur le réseau et valider avec « suivant ».</li>
+                <li>Sélectionner le modèle le plus proche de l’imprimante actuelle dans la liste et valider la sélection en cliquant sur « Ajouter l’imprimante ».</li>
+                <li>L’imprimante est désormais installée.</li>
+            </ol>
+        </section>
+        <section id="Configuration du NAS et de la sauvegarde">
+            <h2>Configuration du NAS et de la sauvegarde</h2>
+            <ol>
+                <li>Pour la partie Samba, commencer par monter le disque dur au système.</li>
+                <p>sudo mkdir /mnt/sda1 && sudo mount /dev/sda1</p>
+                <li>Pour éviter d’écrire cette commande à chaque fois que le Pi redémarre, ajouter une ligne au fichier /etc/fstab pour monter directement le disque au démarrage.</li>
+                <p>echo '/dev/sda1 /mnt/sda1/ ext4 defaults,noatime 0 1' | sudo tee -a /etc/fstab</p>
+                <li>Une fois monté, créer les dossiers qui vont être utilisé pour le partage de fichiers. Voici des exemples :</li>
+                <p>sudo mkdir /mnt/sda1/nas</p>
+                <li>Éditer le fichier de configuration Samba pour permettre de partager les dossiers créés précédemment sur le réseau. Voici un exemple :</li>
+                <p>sudo tee -a /etc/samba/smb.conf > /dev/null <<EOL
+                    [nas]
+                    path=/mnt/sda1/shared
+                    writeable = yes
+                    create mask = 0770
+                    directory mask = 0770
+                    public=no
+                    
+                    [TimeMachine]
+                    comment = Time Machine Backup
+                    path = /mnt/sda1/TimeMachine
+                    browseable = yes
+                    writeable = yes
+                    guest ok = no
+                    create mask = 0770
+                    directory mask = 0770
+                    vfs objects = catia fruit streams_xattr
+                    fruit:aapl = yes
+                    fruit:time machine = yes
+                    EOL
+                </p>
+                <li>Redémarrer le service Samba pour appliquer les changements effectués dans le fichier de configuration.</li>
+                <p>sudo systemctl restart smbd</p>
+                <li>Créer les utilisateurs qui accéderont aux partages de fichiers ainsi que les groupes nécessaires. Voici des exemples :</li>
+                <p> sudo adduser user_nas
+                    sudo groupadd group_nas
+                </p>
+                <li>Créer un mot de passe aux utilisateurs Samba.</li>
+                <p>sudo smbpasswd -a user_nas</p>
+                <li>Ajouter les utilisateurs aux bons groupes.</li>
+                <p>sudo adduser user_nas group_nas</p>
+                <li>Définir les droits et les permissions aux dossiers, voici des exemples :</li>
+                <p> sudo chmod -R 770 /mnt/sda1
+                    sudo chown -R :group_nas /mnt/sda1/nas
+                    sudo chown -R :timemachine /mnt/sda1/TimeMachine
+                </p>
+                <li>Redémarrer le service Samba pour appliquer les changements effectués.</li>
+                <p>sudo systemctl restart smbd</p>
+            </ol>
+        </section>
+        <section id="Mise en place de l'impression sur macOS">
+            <h2>Mise en place de l'impression sur macOS</h2>
+            <ol>
+                <li>Aller dans « Réglages systèmes » sous « Imprimantes et scanners ». Cliquer sur le bouton « + ».</li>
+                <li>Dans la nouvelle fenêtre, chercher l’imprimante ajoutée dans CUPS. Valider les paramètres de l’imprimante.</li>
+                <li>L’imprimante est ajoutée.</li>
+            </ol>
+        </section>
+        <section id="Mise en place de l'impression sur Windows">
+            <h2>Mise en place de l'impression sur Windows</h2>
+            <ol>
+                <li>Ouvrir « Paramètres ».</li>
+                <li>Dans « Bluetooth et appareils » sous « Imprimantes et scanners ».</li>
+                <li>Cliquer sur « Ajouter un appareil ».</li>
+                <li>Dans la liste, chercher l’imprimante ajoutée dans CUPS et cliquer sur « Ajouter l’appareil ».</li>
+                <li>L’imprimante est ajoutée.</li>
+            </ol>
+        </section>
+        <section id="Mise en place de la sauvegarde sur macOS">
+            <h2>Mise en place de la sauvegarde sur macOS</h2>
+            <ol>
+                <li>Aller dans « Réglages systèmes » sous « Time Machine ».</li>
+                <li>Cliquer sur « Sélectionner un disque de sauvegarde ».</li>
+                <li>Sélectionner le partage Samba pour Time Machine. Valider la connexion.</li>
+                <li>Introduire les informations de connexion du compte configuré précédemment./li>
+                <li>La sauvegarde se lance.</li>
+            </ol>
+        </section>
+        <section id="Mise en place de la sauvegarde sur Windows">
+            <h2>Mise en place de la sauvegarde sur Windows</h2>
+            <ol>
+                <li>Ouvrir l’ancien panneau de configuration avec Win + R et enter « control ».</li>
+                <li>Cliquer sur « Sauvegarder et restaurer (Windows 7) ».</li>
+                <li>Cliquer sur « Configurer la sauvegarde ».</li>
+                <li>Cliquer sur « Enregistrer sur un réseau ».</li>
+                <li>Introduire l’adresse du Raspberry Pi et les informations de connexion du compte configuré précédemment et valider avec « OK ». Cliquer sur « suivant ».</li>
+                <li>Laisser les paramètres par défaut et valider avec « OK ». Vérifier les paramètres de sauvegarde et valider avec « Enregistrer les paramètres et exécuter la sauvegarde ».</li>
+                <li>La sauvegarde se lance.</li>
+            </ol>
+        </section>
+        <section id="Mise en place du NAS sur macOS">
+            <h2>Mise en place du NAS sur macOS</h2>
+            <ol>
+                <li>Ouvrir la fenêtre de connexion avec CMD + K et introduire l’adresse du Raspberry Pi et valider avec « Connecter ».</li>
+                <li>Introduire les informations de connexion du compte configuré précédemment et valider avec « Connecter ».</li>
+                <li>Le partage est connecté.</li>
+            </ol>
+        </section>
+        <section id="Mise en place du NAS sur Windows">
+            <h2>Mise en place du NAS sur Windows</h2>
+            <ol>
+                <li>Ouvrir une fenêtre dans l’explorateur de fichier et cliquer sur « Ce PC », dans le menu burger, sélectionner « Connecter un lecteur réseau ». Sélectionner la lettre de chemin d’accès, introduire l’adresse du Raspberry Pi, cocher « Se reconnecter lors de la connexion » et valider avec « Terminer ».</li>
+                <li>Introduire les informations de connexion du compte configuré précédemment, cocher « Mémoriser mes informations d’identification » et valider avec « OK ». Le partage est connecté.</li>
+            </ol>
         </section>
     </div>
     <footer>
-        <p>&copy; Février 2024 - TPI Homepi - Documentation utilisateur "Utilisation simplifiée d’un Raspberry Pi à domicile"</p>
+        <p>&copy; Février 2024 - TPI Homepi - Raspberry Pi : Utilisation à domicile et services avancés - Documentation utilisateur "Utilisation simplifiée d’un Raspberry Pi à domicile"</p>
     </footer>
 </body>
 </html>
